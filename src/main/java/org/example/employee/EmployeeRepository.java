@@ -1,0 +1,62 @@
+package org.example.employee;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class EmployeeRepository {
+    private final Connection connection;
+
+    public EmployeeRepository(Connection connection) {
+        this.connection = connection;
+    }
+
+    // Commented for testing purposes
+    // SELECT * FROM Employees FETCH FIRST 5 ROWS ONLY WITH UR
+    public void addEmployee(String firstName, String lastName, int departmentId, double salary) throws SQLException {
+        String sql = "INSERT INTO Employees (first_name, last_name, department_id, salary) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, firstName);
+            stmt.setString(2, lastName);
+            stmt.setInt(3, departmentId);
+            stmt.setDouble(4, salary);
+            stmt.executeUpdate();
+        }
+    }
+
+    public List<Employee> getAllEmployees() throws SQLException {
+        List<Employee> employees = new ArrayList<>();
+        String sql = "SELECT * FROM Employees";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                employees.add(new Employee(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getInt("department_id"),
+                        rs.getDouble("salary")
+                ));
+            }
+        }
+        return employees;
+    }
+
+    public List<Employee> getFirstFiveEmployees() throws SQLException {
+        List<Employee> employees = new ArrayList<>();
+        String sql = "SELECT * FROM Employees FETCH FIRST 5 ROWS ONLY WITH UR";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                employees.add(new Employee(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getInt("department_id"),
+                        rs.getDouble("salary")
+                ));
+            }
+        }
+        return employees;
+    }
+}
