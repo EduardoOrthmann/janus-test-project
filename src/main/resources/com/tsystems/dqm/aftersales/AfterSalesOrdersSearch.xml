@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://www.t-systems.com/xsd/DBConfig.xsd">
+    <dataSource>jdbc/dqmrep</dataSource>
+    <initialContextFactory>com.ibm.websphere.naming.WsnInitialContextFactory</initialContextFactory>
+
+    <designatorDict>
+        <designator name="DQM_SCHEMA">
+            <databaseID>DQM.</databaseID>
+        </designator>
+    </designatorDict>
+
+    <queriesDict name="AfterSalesOrders">
+        <statement name="SELECT.AFTER.SALES.ORDERS">
+            SELECT
+            A.ID                                    AS ID,
+            A.WERK                                  AS PLANT,
+            A.LF_NR                                 AS SUPPLIER_NUMBER,
+            A.WE_NAME                               AS SUPPLIER_NAME,
+            A.BELNR                                 AS ORDER_NUMBER,
+            A.CREATIONTIME                          AS ORDER_DATE,
+            A.ABLADESTELLE                          AS UNLOADING_POINT,
+            LISTAGG(DISTINCT AA.IDTNR, ',')         AS ARTICLE_NUMBERS,
+            LISTAGG(DISTINCT AA.IDTNR_EXTERN, ',')  AS ARTICLE_NUMBERS_EXT,
+            A.TYPE                                  AS ORDER_TYPE,
+            LISTAGG(DISTINCT AV.VERSANDDATUM, ',')  AS SEND_DATES
+            FROM
+            {DQM_SCHEMA}DQMSTA_AFTERSALES AS A
+            LEFT JOIN {DQM_SCHEMA}DQMSTA_AFTERSALES_SACHNR AA
+            ON A.ID = AA.SALESORDER_ID
+            LEFT JOIN {DQM_SCHEMA}DQMSTA_AFTERSALES_VERSAND AV
+            ON A.ID = AV.SALESORDER_ID
+            LEFT JOIN {DQM_SCHEMA}DQMRE2_WE_WERK AS W
+            ON A.WERK = W.WERK_NR
+            WHERE
+            1 = 1
+            @paramStatement{Filter.SEARCH_PLANT_AUTH_LIST,PLANT_AUTH_LIST}
+            @paramStatement{Filter.SEARCH_SUPPLIER_NUMBER_AUTH_LIST,SUPPLIER_NUMBER_AUTH_LIST}
+            @paramStatement{Filter.SEARCH_PLANT_LIST,PLANT_LIST}
+            @paramStatement{Filter.SEARCH_ORDER_DATE_FROM,ORDER_DATE_FROM}
+            @paramStatement{Filter.SEARCH_ORDER_DATE_TO,ORDER_DATE_TO}
+            @paramStatement{Filter.SEARCH_ARTICLE_NUMBER,ARTICLE_NUMBER}
+            @paramStatement{Filter.SEARCH_ORDER_NUMBER,ORDER_NUMBER}
+            @paramStatement{Filter.SEARCH_ORDER_TYPE,ORDER_TYPE}
+            @paramStatement{Filter.SEARCH_SUPPLIER_NUMBER,SUPPLIER_NUMBER}
+            @paramStatement{Filter.SEARCH_UNLOADING_POINT,UNLOADING_POINT}
+            @paramStatement{Filter.SEARCH_IDS,IDS}
+
+            GROUP BY
+            A.ID,
+            A.WERK,
+            A.LF_NR,
+            A.BELNR,
+            A.WE_NAME,
+            A.CREATIONTIME,
+            A.ABLADESTELLE,
+            A.TYPE
+            @paramStatement{FetchLimit,MAX_NUMBER_OF_ROWS}
+        </statement>
+        <statement name="Filter.SEARCH_IDS">
+            AND A.ID IN (@iParam{IDS})
+        </statement>
+        <statement name="Filter.SEARCH_PLANT_AUTH_LIST">
+            AND W.DATENEMPFAENGERNUMMER IN (@iParam{PLANT_AUTH_LIST})
+        </statement>
+        <statement name="Filter.SEARCH_SUPPLIER_NUMBER_AUTH_LIST">
+            AND A.LF_NR IN (@iParam{SUPPLIER_NUMBER_AUTH_LIST})
+        </statement>
+        <statement name="Filter.SEARCH_PLANT_LIST">
+            AND A.WERK IN (@iParam{PLANT_LIST})
+        </statement>
+        <statement name="Filter.SEARCH_ORDER_DATE_FROM">
+            AND A.CREATIONTIME &gt;= @param{ORDER_DATE_FROM}
+        </statement>
+        <statement name="Filter.SEARCH_ORDER_DATE_TO">
+            AND A.CREATIONTIME &lt;= @param{ORDER_DATE_TO}
+        </statement>
+        <statement name="Filter.SEARCH_ARTICLE_NUMBER">
+            AND (@iParam{ARTICLE_NUMBER})
+        </statement>
+        <statement name="Filter.SEARCH_ORDER_NUMBER">
+            AND (@iParam{ORDER_NUMBER})
+        </statement>
+        <statement name="Filter.SEARCH_UNLOADING_POINT">
+            AND (@iParam{UNLOADING_POINT})
+        </statement>
+        <statement name="Filter.SEARCH_SUPPLIER_NUMBER">
+            AND (@iParam{SUPPLIER_NUMBER})
+        </statement>
+        <statement name="Filter.SEARCH_ORDER_TYPE">
+            AND A.TYPE IN (@iParam{ORDER_TYPE})
+        </statement>
+        <statement name="FetchLimit">
+            FETCH FIRST @param{MAX_NUMBER_OF_ROWS} ROWS ONLY
+        </statement>
+
+    </queriesDict>
+</config>

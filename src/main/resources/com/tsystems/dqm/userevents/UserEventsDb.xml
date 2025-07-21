@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<config>
+    <dataSource>jdbc/dqmrep</dataSource>
+    <designatorDict>
+        <designator name="SCHEMA">
+            <databaseID>DQM.</databaseID>
+        </designator>
+    </designatorDict>
+    <queriesDict name="USER_EVENTS">
+        <statement name="SELECT.USER.FOR.LNR">
+            SELECT DISTINCT EVT.USER_ID
+            FROM
+            {SCHEMA}DQMUSR_EVENTS EVT
+            JOIN {SCHEMA}DQMUSR_USER U ON EVT.USER_ID = U.ID AND U.USERTYPE = 'E'
+            WHERE U.USERNAME = @param{USERNAME}
+        </statement>
+        <statement name="UPDATE.USER.EVENT.BELASTUNG_DFUE">
+            UPDATE {SCHEMA}DQMUSR_EVENTS
+            SET
+            FESTSTELLUNG_DFUE_FEHLER = 'TRUE',
+            BELASTUNG_DFUE_SENDUNG = 'TRUE'
+            WHERE
+            USER_ID IN (@statement{SELECT.USER.FOR.LNR})
+        </statement>
+    </queriesDict>
+</config>

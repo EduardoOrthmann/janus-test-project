@@ -58,11 +58,11 @@ public class Employee {
     @Override
     public String toString() {
         return "Employee {\n" +
-                "        \tid = " + id + "\n" +
-                "        \tfirstName = '" + firstName + '\'' + "\n" +
-                "        \tlastName = '" + lastName + '\'' + "\n" +
-                "        \tdepartmentId = " + departmentId + "\n" +
-                "        \tsalary = " + salary + "\n" +
-                '}';
+               "        \tid = " + id + "\n" +
+               "        \tfirstName = '" + firstName + '\'' + "\n" +
+               "        \tlastName = '" + lastName + '\'' + "\n" +
+               "        \tdepartmentId = " + departmentId + "\n" +
+               "        \tsalary = " + salary + "\n" +
+               '}';
     }
 }

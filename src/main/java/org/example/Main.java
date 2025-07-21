@@ -1,57 +1,42 @@
 package org.example;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-import org.example.department.Department;
 import org.example.department.DepartmentRepository;
 import org.example.employee.EmployeeRepository;
 import org.example.project.ProjectRepository;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.List;
-
 public class Main {
     public static void main(String[] args) {
-        String jdbcUrl = "jdbc:db2://localhost:50000/test-db2";
-        String username = "password";
-        String password = "password";
+        System.out.println("--- Janus Test Project for DB2 to PostgreSQL Migration ---");
+        System.out.println("This project is designed to build without errors to test conversion tools.");
 
-        try (Connection conn = DriverManager.getConnection(jdbcUrl, username, password)) {
+        // The following code simulates how the DAO classes would be used.
+        // It is not expected to run successfully without a real DB connection.
+        Connection conn = null;
+        try {
+            // In a real scenario, you would connect to a DB2 database.
+            // String jdbcUrl = "jdbc:db2://localhost:50000/test-db";
+            // String username = "user";
+            // String password = "password";
+            // conn = DriverManager.getConnection(jdbcUrl, username, password);
+
             EmployeeRepository employeeRepo = new EmployeeRepository(conn);
             DepartmentRepository departmentRepo = new DepartmentRepository(conn);
             ProjectRepository projectRepo = new ProjectRepository(conn);
 
-            // Create departments
-            departmentRepo.addDepartment("Engineering", "São Paulo");
-            departmentRepo.addDepartment("HR", "Rio de Janeiro");
-
-            // Get department ID
-            List<Department> departments = departmentRepo.getAllDepartments();
-            int engineeringId = departments.getFirst().getId();
-
-            // Add employees
-            employeeRepo.addEmployee("Alice", "Smith", engineeringId, 75000);
-            employeeRepo.addEmployee("Bob", "Johnson", engineeringId, 60000);
-
-            // Add projects
-            projectRepo.addProject("AI Research", engineeringId);
-            projectRepo.addProject("Migration", engineeringId);
-
-            // List employees
-            System.out.println("\n--- All Employees ---");
-            employeeRepo.getAllEmployees().forEach(System.out::println);
-
-            // List projects
-            System.out.println("\n--- All Projects ---");
-            projectRepo.getAllProjects().forEach(System.out::println);
-
-            // List departments with LEFT OUTER JOIN
-            System.out.println("\n--- Departments and Projects ---");
+            System.out.println("\n--- Simulating Repository Calls ---");
+            employeeRepo.getFirstFiveEmployees();
             departmentRepo.listDepartmentsWithProjects();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Caught expected SQLException during simulation: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Caught unexpected exception: " + e.getMessage());
         }
+
+        System.out.println("\n--- Janus Test Project build simulation finished ---");
     }
 }

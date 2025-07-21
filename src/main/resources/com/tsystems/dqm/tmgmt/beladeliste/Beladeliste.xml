@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <queriesDict name="Beladeliste">
+        <statement name="SELECT.BELADELISTE">
+            SELECT VERSION FROM DQM.DQMBEL_BELADELISTE
+            WHERE BORDERONUMMER = @param{BORDERONUMMER} AND WERKNUMMER = @param{WERKNUMMER}
+        </statement>
+        <statement name="SELECT.PACKSTUECK_AVIS">
+            SELECT * FROM DQM.V_BEL_PACKSTUECK_AVIS
+            WHERE BORDERONUMMER = @param{BORDERONUMMER} AND WERKNUMMER = @param{WERKNUMMER}
+        </statement>
+        <statement name="DELETE.SCANNED">
+            DELETE FROM DQM.DQMBEL_SCAN WHERE BORDERONUMMER = @param{BORDERONUMMER} AND WERKNUMMER = @param{WERKNUMMER}
+        </statement>
+    </queriesDict>
+</config>

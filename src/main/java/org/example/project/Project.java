@@ -38,9 +38,9 @@ public class Project {
     @Override
     public String toString() {
         return "Project {\n" +
-                "        \tid = " + id + "\n" +
-                "        \tname = '" + name + '\'' + "\n" +
-                "        \tdepartmentId = " + departmentId + "\n" +
-                '}';
+               "        \tid = " + id + "\n" +
+               "        \tname = '" + name + '\'' + "\n" +
+               "        \tdepartmentId = " + departmentId + "\n" +
+               '}';
     }
 }

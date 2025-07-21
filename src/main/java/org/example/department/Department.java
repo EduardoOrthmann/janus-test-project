@@ -38,9 +38,9 @@ public class Department {
     @Override
     public String toString() {
         return "Department {\n" +
-                "        \tid = " + id + "\n" +
-                "        \tname = '" + name + '\'' + "\n" +
-                "        \tlocation = '" + location + '\'' + "\n" +
-                '}';
+               "        \tid = " + id + "\n" +
+               "        \tname = '" + name + '\'' + "\n" +
+               "        \tlocation = '" + location + '\'' + "\n" +
+               '}';
     }
 }

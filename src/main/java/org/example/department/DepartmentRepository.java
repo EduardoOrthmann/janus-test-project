@@ -72,12 +72,10 @@ public class DepartmentRepository {
     }
 
     public void listDepartmentsWithProjects() throws SQLException {
-        String sql = """
-        SELECT d.id AS dept_id, d.name AS dept_name, p.name AS project_name
-        FROM Departments d
-        LEFT OUTER JOIN Projects p ON d.id = p.department_id
-        FETCH FIRST 10 ROWS ONLY
-    """;
+        String sql = "SELECT d.name AS dept_name, p.name AS project_name " +
+                     "FROM Departments d " +
+                     "LEFT OUTER JOIN Projects p ON d.id = p.department_id " +
+                     "FETCH FIRST 10 ROWS ONLY";
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {

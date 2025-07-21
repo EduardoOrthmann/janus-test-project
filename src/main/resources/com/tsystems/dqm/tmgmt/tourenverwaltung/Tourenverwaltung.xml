@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <queriesDict name="Tourenverwaltung">
+        <statement name="SELECT.TOUREN">
+            SELECT * FROM S0XCTM.V_TOUR
+            WHERE BORDERONUMMER LIKE @param{BORDERONUMMER} AND WERKNUMMER = @param{WERKNUMMER}
+        </statement>
+        <statement name="INSERT.TOUR">
+            INSERT INTO S0XCTM.S0XRTOUR_TOUR (TOUR_ID, BORDERONUMMER, LOKATION_ID)
+            VALUES (@param{TOUR_ID}, @param{BORDERONUMMER}, @param{LOKATION_ID})
+        </statement>
+        <statement name="UPDATE.TOUR">
+            UPDATE S0XCTM.S0XRTOUR_TOUR SET STATUS = @param{STATUS} WHERE TOUR_ID = @param{TOUR_ID}
+        </statement>
+    </queriesDict>
+</config>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://www.t-systems.com/xsd/DBConfig.xsd">
+
+    <dataSource>jdbc/dqmrep</dataSource>
+    <initialContextFactory>com.ibm.websphere.naming.WsnInitialContextFactory</initialContextFactory>
+
+    <designatorDict>
+        <designator name="SCHEMA">
+            <databaseID>DQM.</databaseID>
+        </designator>
+    </designatorDict>
+
+    <queriesDict name="Main">
+        <statement name="UPDATE.ACTIVE">
+            MERGE INTO {SCHEMA}DQMTIM_LOCK TL
+            USING TABLE ( VALUES('DUMMY') ) S (DUMMY)
+            ON TL.APP_ID = @param{APP_ID}
+            WHEN MATCHED AND (
+            SELECT
+            CASE
+            WHEN TID_EQ = 1
+            AND L_EQ = 1
+            THEN 1
+            WHEN TID_EQ = 0
+            AND L_EQ = 1
+            THEN 0
+            WHEN L_EQ = 0
+            THEN 1
+            END ACTIVE
+            FROM
+            (
+            SELECT
+            TIMER_LOCK_ID AS TID,
+            APP_ID AS AIT,
+            CASE
+            WHEN TIMER_LOCK_ID = @param{TIMER_LOCK_ID}
+            THEN 1
+            ELSE 0
+            END AS TID_EQ,
+            CASE
+            WHEN LAST_CALL + @iparam{INTERVAL} MICROSECONDS &gt; CURRENT TIMESTAMP
+            THEN 1
+            ELSE 0
+            END AS L_EQ
+            FROM {SCHEMA}DQMTIM_LOCK
+            ) RES  where AIT =  @param{APP_ID}
+            ) = 1
+            THEN UPDATE SET
+            LAST_CALL = CURRENT TIMESTAMP,
+            TIMER_LOCK_ID = @param{TIMER_LOCK_ID}
+            WHEN NOT MATCHED THEN
+            INSERT VALUES
+            (
+            CURRENT TIMESTAMP,
+            @param{TIMER_LOCK_ID},
+            @param{APP_ID}
+            )
+        </statement>
+    </queriesDict>
+</config>

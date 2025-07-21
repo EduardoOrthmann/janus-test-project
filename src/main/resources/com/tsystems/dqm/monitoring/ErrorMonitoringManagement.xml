@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <dataSource>jdbc/dqmrep</dataSource>
+    <queriesDict name="Admin">
+        <statement name="SELECT.ERRORCONFIG.ALL">
+            SELECT * FROM DQM.DQMON_ERROR_CONFIG WHERE DATENTYP = @param{DATENTYP}
+        </statement>
+        <statement name="UPDATE.ERRORCONFIG">
+            UPDATE DQM.DQMON_ERROR_CONFIG SET ZIELWERT_OK = @param{ZIELWERT_OK} WHERE FEHLERTYP_ID = @param{FEHLERTYP_ID}
+        </statement>
+        <statement name="INSERT.ERRORCONFIG">
+            INSERT INTO DQM.DQMON_ERROR_CONFIG (FEHLERTYP_ID, DATENTYP) VALUES (@param{FEHLERTYP_ID}, @param{DATENTYP})
+        </statement>
+        <statement name="DELETE.ERRORCONFIG">
+            DELETE FROM DQM.DQMON_ERROR_CONFIG WHERE FEHLERTYP_ID = @param{FEHLERTYP_ID} AND DATENTYP = @param{DATENTYP}
+        </statement>
+    </queriesDict>
+</config>
